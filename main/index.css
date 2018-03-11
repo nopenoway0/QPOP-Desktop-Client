@@ -1,0 +1,33 @@
+button.noPointer
+{
+	cursor: default !important;
+}
+
+button.slowBackgroundFade
+{
+	transition: background-color .4s !important;
+}
+
+.screenWidth
+{
+	width: 100% !important;
+}
+
+#status-container{
+	height: 100%;
+	margin: 0.5%;
+	margin-top: 1%;
+	margin-bottom: 2%;
+}
+
+#info-container{
+	margin: 0.5%;
+	margin-top: 1%;
+	margin-bottom: 2%;
+}
+
+body{
+	background-image:url("../assets/background.svg");
+	background-size: : 100% 100%;
+	overflow-y: hidden;
+}

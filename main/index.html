@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head lang = "en">
+    <!--https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined-->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src = "../dependencies/jquery.js"></script>
+    <script src = "../dependencies/semantic/semantic.js"></script>
+    <script src = "../dependencies/velocity.js"></script>
+    <link rel = "stylesheet" type="text/css" href = "../dependencies/semantic/semantic.min.css">
+    <link rel = "stylesheet" href = "index.css">
+    <script> if(window.module) module = windows.module; </script>
+  </head>
+  <body onbeforeunload="shutdown()">
+    <script src = "index.js"></script>
+    <div id = "status-container" class = "ui list">
+
+      <div class = "item">
+        <div class="ui label screenWidth">
+          <button id = "p-detected" class = "noPointer slowBackgroundFade circular ui icon button">
+            <i id = "p-det-status" class = "icon question circle outline"></i>
+          </button>
+          Found League of Legends Process
+        </div>
+      </div>
+
+      <div class = "item">
+        <div class="ui label screenWidth">
+          <button id = "mobile-detected" class = "noPointer slowBackgroundFade circular ui icon button">
+            <i id = "m-det-status" class = "icon question circle outline"></i>
+          </button> 
+          Mobile App Detected
+        </div>
+      </div>
+
+      <div class = "item">
+        <div class="ui label screenWidth">
+          <button id = "processing-img" class = "noPointer slowBackgroundFade circular ui icon button ">
+            <i id = "processing-img-status" class = "icon question circle outline"></i>
+          </button> 
+          Processing Images
+        </div>
+      </div>
+    </div>
+
+    <div class = "ui basic modal" id = "in-game-modal" style = "closable: false">
+      <div class = "ui icon header">
+        <i class = "icon pause"></i>
+        In Game
+      </div>
+    </div>
+
+    <div class = "ui basic modal" id = "match-detected" style = "closable:false">
+      <div class = "ui icon header">
+        <i class = "icon mobile"></i>
+        Accepting...
+      </div>
+    </div>
+  </body>
+</html>
