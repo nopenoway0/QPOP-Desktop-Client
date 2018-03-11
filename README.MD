@@ -39,5 +39,3 @@ As these conditions are fulfilled, each row will light up with a corresponding c
 
 ### Building the processModule
 If you want to build the processModule yourself, see instructions [here](https://github.com/nopenoway0/qpop-v8-processing-module).
-
-Wallpaper made by: 
