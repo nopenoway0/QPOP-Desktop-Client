@@ -1,5 +1,4 @@
 const fs = require('fs');
-//const addon = require('../dependencies/processingModule');
 const addon = require('../dependencies/processingmodule');
 const net = require('net');
 
@@ -12,11 +11,25 @@ var mobile_connection = false;
 var enable_click = false;
 var mobile_socket = null;
 
+process.on('message', (msg) =>
+{
+	if(msg['exit'])
+	{
+		if(mobile_socket != null)
+		{
+			mobile_socket.end(() =>
+				{
+					console.log("ending connection");
+				});
+			mobile_socket.destroy();
+			mobile_socket = null;
+		}
+		server.close();
+	}
+});
+
 // start server
 const server = net.createServer((mobileConnection) => {
-	mobile_connection = true;
-	console.log("connection to :" + mobileConnection.remoteAddress + " : " + mobileConnection.remotePort);
-	mobile_socket = mobileConnection;
 	mobileConnection.on('end', () => {
 		mobile_socket = null;
 		console.log("connction ended");
@@ -26,7 +39,6 @@ const server = net.createServer((mobileConnection) => {
 	mobileConnection.on('close', ()=>{
 		console.log("client disconnected");
 		mobile_socket = null;
-		mobile_connection = false;
 	});
 
 	mobileConnection.on('data', (buffer) => {
@@ -41,11 +53,42 @@ const server = net.createServer((mobileConnection) => {
 
 	mobileConnection.on('error', (buffer) =>
 	{
-		console.log(buffer);
-	})
+		console.log("error: " + buffer);
+		mobile_socket = null;
+	});
+
+	mobileConnection.on('timeout', (buffer)=>
+	{
+		console.log('timeout: ' + buffer);
+	});
+
+	 /*mobileConnection.on('connect', () =>
+	 {
+		mobile_connection = true;
+		console.log("connection to :" + mobileConnection.remoteAddress + " : " + mobileConnection.remotePort);
+		mobile_socket = mobileConnection;
+	 });*/
 });
 
-server.listen(7767, () =>{
+server.on('connection', (mobileConnection) =>{
+	if(mobile_socket != null)
+		mobile_socket.destroy();
+	mobile_socket = mobileConnection;
+	console.log('server connected');
+	console.log("connection to :" + mobileConnection.remoteAddress + " : " + mobileConnection.remotePort);
+});
+
+server.on('error', (buffer) =>
+{
+	console.log('server error' + buffer);
+});
+
+server.on('close', ()=>
+{
+	console.log('server disconnected');
+});
+
+server.listen(7767, true, () =>{
 	console.log("server started");
 });
 
@@ -58,11 +101,17 @@ console.log(addon.setDefaultImage('resources\\app.asar.unpacked\\assets\\accept.
 var testCount = 0;
 
 setInterval(() => {
+	console.log("server listening: " + server.listening);
+	server.getConnections((err, count)=>
+		{
+			if(count > 0)
+				mobile_connection = true;
+		});
+	console.log("mobile_connection detected: " + mobile_connection);
 	testCount++;
 	var processing_img = false;
 	var queue_popped = false;
 	var process_running = addon.processRunning('LeagueClientUx.exe');
-
 	if(mobile_connection)
 	{
 		let message = 0x0;
@@ -70,7 +119,8 @@ setInterval(() => {
 		if(process_running)
 		{
 			message |= PFOUND;
-			let result = addon.screenshotAndCompare('LeagueClientUx.exe'); // throwing error
+			let result = 1;
+			result = addon.screenshotAndCompare('LeagueClientUx.exe', 550, 527);
 			if(result != 1)
 				processing_img = true;
 			if(result <= threshold)
@@ -82,9 +132,12 @@ setInterval(() => {
 			else
 				enable_click = false;
 
+			console.log("comparison result: " + result);
+
 			// delete after testing
 			/*if(testCount > 10 && testCount < 20)
 			{
+				//console.log(addon.clickProcess('LeagueClientUx.exe', 165, 668));
 				queue_popped = true;
 				message |= QPOP;
 				enable_click = true;
