@@ -14,8 +14,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "build":{
-    "asarUnpack":["assets/accept.bmp"]
+  "build": {
+    "asarUnpack": [
+      "assets/accept.bmp"
+    ]
   },
   "devDependencies": {
     "child_process": "^1.0.2",
