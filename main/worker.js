@@ -31,24 +31,19 @@ process.on('message', (msg) =>
 // start server
 const server = net.createServer((mobileConnection) => {
 	mobileConnection.on('end', () => {
-		mobile_socket = null;
+		//mobile_socket = null;
 		console.log("connction ended");
-		mobile_connection = false;
+		//mobile_connection = false;
 	});
 
 	mobileConnection.on('close', ()=>{
 		console.log("client disconnected");
-		mobile_socket = null;
+		//mobile_socket = null;
 	});
 
 	mobileConnection.on('data', (buffer) => {
 		if(buffer[0] == 1 && enable_click)
-		{
-			console.log('should click');
-		}
-		else
-		{
-		}
+			addon.clickProcess('LeagueClientUx.exe', 555, 532);
 	});
 
 	mobileConnection.on('error', (buffer) =>
@@ -61,18 +56,9 @@ const server = net.createServer((mobileConnection) => {
 	{
 		console.log('timeout: ' + buffer);
 	});
-
-	 /*mobileConnection.on('connect', () =>
-	 {
-		mobile_connection = true;
-		console.log("connection to :" + mobileConnection.remoteAddress + " : " + mobileConnection.remotePort);
-		mobile_socket = mobileConnection;
-	 });*/
 });
 
 server.on('connection', (mobileConnection) =>{
-	if(mobile_socket != null)
-		mobile_socket.destroy();
 	mobile_socket = mobileConnection;
 	console.log('server connected');
 	console.log("connection to :" + mobileConnection.remoteAddress + " : " + mobileConnection.remotePort);
@@ -101,13 +87,15 @@ console.log(addon.setDefaultImage('resources\\app.asar.unpacked\\assets\\accept.
 var testCount = 0;
 
 setInterval(() => {
-	console.log("server listening: " + server.listening);
+	//console.log("server listening: " + server.listening);
 	server.getConnections((err, count)=>
 		{
 			if(count > 0)
 				mobile_connection = true;
+			else
+				mobile_connection = false;
 		});
-	console.log("mobile_connection detected: " + mobile_connection);
+	//console.log("mobile_connection detected: " + mobile_connection);
 	testCount++;
 	var processing_img = false;
 	var queue_popped = false;
@@ -132,12 +120,11 @@ setInterval(() => {
 			else
 				enable_click = false;
 
-			console.log("comparison result: " + result);
+			//console.log("comparison result: " + result);
 
 			// delete after testing
 			/*if(testCount > 10 && testCount < 20)
 			{
-				//console.log(addon.clickProcess('LeagueClientUx.exe', 165, 668));
 				queue_popped = true;
 				message |= QPOP;
 				enable_click = true;
